@@ -6,20 +6,20 @@ def get_cfg():
 
     # File Path
     cfg["FILE_PATH"] = {
-        'processed_file':'/home/tfshen/pyproject/pcg/ui/data/dataset/ui_sample.json',
-        'raw_test_file':'/home/tfshen/pyproject/pcg/data/split/test.json',    
-        'sample_file': '/home/tfshen/pyproject/pcg/ui/data/dataset/test_sample.txt',
-        'rank_file':'/home/tfshen/pyproject/pcg/ui/data/result/all_rank.json',
-        'img_dir':'/data/tfshen/pcg_imagebase',
-        'navigation_path':'/data/tfshen/pcg_imagebase/navigation.json',
-        'out_path':'/home/tfshen/pyproject/pcg/ui/data/dataset/ui_sample.json'
+        'processed_file':'/workspaces/pcg-eval/data/dataset/ui_sample.json',
+        'raw_test_file':'/workspaces/pcg-eval/data/dataset/test.json',    
+        'sample_file': '/workspaces/pcg-eval/data/dataset/test_sample.txt',
+        'rank_file':'',
+        'img_dir':'',
+        'navigation_path':'',
+        'out_path':''
     }
     # Gen Path
     cfg["GEN_PATH"] = {
-        'ofa_ft_gen_path#1': '/home/tfshen/pyproject/pcg/baselines/ofa/results/caption/translate.txt',
-        'maria_ft_gen_path#1':'/data/tfshen/pcg_results/maria/pcg_maria/checkpoint-13-3000/pred-mode=test-seed=2-beam_size=3-do_sample=False-top_k=0-top_p=1-temperature=1-repetition_penalty=1.25.tsv.txt',
-        'livebot_ft_gen_path#1':'',
-        'mplug-video_z-shot_gen_path#1':'',
+        'ofa_ft_gen_path#1': '/workspaces/pcg-eval/data/generation/ofa.txt',
+        'maria_ft_gen_path#1':'/workspaces/pcg-eval/data/generation/maria.txt',
+        'livebot_ft_gen_path#1':'/workspaces/pcg-eval/data/generation/livebot.txt',
+        'mplug-video_z-shot_gen_path#1':'/workspaces/pcg-eval/data/generation/mplug-video.txt',
         'mplug-owl3_z-shot_gen_path#1':'',
         'qwen2-vl_z-shot_gen_path#1':'',
         'minicpm-v_z-shot_gen_path#1':'',
