@@ -34,7 +34,7 @@ class UI:
                 </div>
             """, unsafe_allow_html=True)
         with col2:
-            intro_img_path = "/workspaces/pcg-eval/data/icon/rainbow.png"
+            intro_img_path = self.cfg['UI']['icon_path']
             st.image(intro_img_path, width=200)
         
 

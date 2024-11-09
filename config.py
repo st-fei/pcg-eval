@@ -38,6 +38,7 @@ def get_cfg():
     # UI
     cfg['UI'] = {
         'max_rank': 2, # 选择前max_rank最高质量的模型
+        'icon_path': './data/icon/rainbow.png'
     }
 
     return cfg
