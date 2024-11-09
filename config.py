@@ -11,6 +11,7 @@ def get_cfg():
         'sample_file': '/workspaces/pcg-eval/data/dataset/test_sample.txt',
         'rank_file':'',
         'img_dir':'',
+        'sample_img_dir': '/workspaces/pcg-eval/data/pcg_img_sample',
         'navigation_path':'',
         'out_path':''
     }
@@ -36,7 +37,7 @@ def get_cfg():
 
     # UI
     cfg['UI'] = {
-        'max_rank': 1, # 选择前max_rank最高质量的模型
+        'max_rank': 2, # 选择前max_rank最高质量的模型
     }
 
     return cfg
