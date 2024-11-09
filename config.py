@@ -6,7 +6,7 @@ def get_cfg():
 
     # File Path
     cfg["FILE_PATH"] = {
-        'processed_file':'/workspaces/pcg-eval/data/dataset/ui_sample.json',
+        'processed_file':'./data/dataset/ui_sample.json',
         'raw_test_file':'/workspaces/pcg-eval/data/dataset/test.json',    
         'sample_file': '/workspaces/pcg-eval/data/dataset/test_sample.txt',
         'rank_file':'',
