@@ -236,17 +236,14 @@ class UI:
         
 
     def show_intro(self):
-        col1, col2 = st.columns([8.2, 1.8])
-        with col1:
-            st.markdown(f"""
+        st.markdown(f"""
                 <div style="border: 2px solid #ccc; padding: 8px; border-radius: 3px;">
                     <h4 style="color: #2978b5;">📘 Survey: Personalized Post Title Generation</h4>
                 </div>
-            """, unsafe_allow_html=True)
-        with col2:
-            intro_img_path = self.cfg['UI']['icon_path']
-            st.image(intro_img_path, width=200)
-        
+        """, unsafe_allow_html=True)
+        st.markdown("")
+
+                
         # 问卷介绍
         with st.expander("问卷介绍"):
             st.markdown("### 📄问卷介绍")
@@ -413,8 +410,7 @@ class UI:
                     # 匹配模型rank
                     st.session_state['rank'][anonymous_name][f'rank_{i+1}']['model_name'] = selected_model_name
                     st.session_state['rank'][anonymous_name][f'rank_{i+1}']['gen_res'] = self.gen_data[selected_model_name][anonymous_name]
-
-                   
+             
     def show_tag(self):
         anonymous_name = st.session_state['anonymous_list'][st.session_state['page_index']]
         st.markdown("### 🏷️个性化标签与情绪标签")
@@ -434,7 +430,6 @@ class UI:
             'emotion_tags': selected_emotion_tags
         }
     
-
     def show_next(self):
         # 问卷调查已经开始
         if st.session_state['start']:
@@ -460,17 +455,22 @@ class UI:
                 # 在最后一页时显示“提交问卷”按钮
                 elif st.session_state['page_index'] == len(st.session_state['anonymous_list']) - 1:
                     if st.button('提交问卷'):
-                        st.write('感谢您的参与')
+                        st.success('感谢您的参与！您的反馈对于我们非常重要！🎉')
                         # ranking结果保存
                         json_str = json.dumps(st.session_state['rank'], ensure_ascii=False, indent=4)
                         now = datetime.now()
                         formatted_date = now.strftime("%Y-%m-%d-%H%M%S")
+                        # 下载按钮
+                        st.markdown("### 📥下载您的评估结果")
+                        st.write("点击下方按钮以下载您的评估结果文件。")
                         st.download_button(
-                            label='Download Json result',
+                            label='📥下载JSON 结果',
                             data=json_str,
                             file_name=f'{formatted_date}.json',
                             mime='application/json'
                         )
+                        # 数据处理提示
+                        st.info("我们会将您的评估结果用于进一步分析，感谢您提供的宝贵反馈！")
                         self.database.post_process(group_id=int(st.session_state['select_id']))
         else:
             if st.button('开始'):
