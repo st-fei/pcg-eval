@@ -272,8 +272,7 @@ class UI:
                 - **请注意**：在问卷提交后，会出现导出问卷评估数据的按钮，请点击进行下载。
                 - **请注意**：每一页问卷会询问当前用户的个性标签和情绪标签，支持多选。
                 """, unsafe_allow_html=True)
-            
-
+        
 
     def show_profile(self):
         anonymous_name = st.session_state['anonymous_list'][st.session_state['page_index']]
@@ -426,17 +425,26 @@ class UI:
              
     def show_tag(self):
         anonymous_name = st.session_state['anonymous_list'][st.session_state['page_index']]
+        if anonymous_name not in st.session_state['tag']:
+            st.session_state['tag'][anonymous_name] = {
+                'personalization_tags': [],
+                'emotion_tags': []
+            }
+
         st.markdown("### 🏷️个性化标签与情绪标签")
 
         # 个性化标签输入
         st.markdown("**个性化标签**")
-        personalization_options = ["探索", "艺术", "自然", "科技", "设计", "温馨", "书籍", "自拍", "好物分享", "其他"]
+        personalization_options = ["探索", "艺术", "自然", "校园", "摄影", "科技", "设计", "温馨", "卡通", "书籍", "自拍", "好物分享", "其他"]
         selected_personalization_tags = st.multiselect("请选择用户的个性化标签（可多选）", personalization_options)
 
         # 情绪标签选择
         st.markdown("**情绪标签**")
         emotion_options = ["期待", "好奇", "惊叹", "放松", "愉悦", "emo", "分享欲", "中性"]
         selected_emotion_tags = st.multiselect("请选择用户的情绪标签（可多选）", emotion_options)
+
+        st.session_state['tag'][anonymous_name]['personalization_tags'] = selected_personalization_tags
+        st.session_state['tag'][anonymous_name]['emotion_tags'] = selected_emotion_tags
 
         st.session_state['rank'][anonymous_name]['tag'] = {
             'personalized_tags': selected_personalization_tags,
@@ -530,6 +538,8 @@ class UI:
             st.session_state['rank'] = {}
         if 'start' not in st.session_state:
             st.session_state['start'] = False
+        if 'tag' not in st.session_state:
+            st.session_state['tag'] = {}
 
         # 所有模型的生成数据
         self.gen_data = self.database.gen_res
