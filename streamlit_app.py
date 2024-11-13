@@ -13,15 +13,6 @@ class UI:
         # 只有参数保持不变
         self.cfg = cfg
         self.database = DataBase(cfg=cfg)
-    
-    def load_image(self, image_urls: list):
-        target_size = (200, 200)
-        combined_image = Image.new('RGB', (target_size[0] * 3, target_size[1]))
-        for i in range(len(image_urls)):
-            img = Image.open(image_urls[i])
-            _img = img.resize(target_size)
-            combined_image.paste(_img, (target_size[0] * i, 0))
-        return combined_image
 
     def show_init(self):
         self.show_intro()
@@ -234,7 +225,6 @@ class UI:
         """)
 
         
-
     def show_intro(self):
         st.markdown(f"""
                 <div style="border: 2px solid #ccc; padding: 8px; border-radius: 3px;">
@@ -260,8 +250,9 @@ class UI:
                 - **与真实标题的风格贴合程度**：若你认为真实标题质量不佳，请忽略该因素。
 
                 **注意事项：**
+                - **请注意**：请用**浏览器**打开该网页（后续涉及下载文件）
                 - **请注意**：请对应上述角度进行认真分析
-                - **请注意**：在进行选择时，不同质量对应的模型名不要重复。
+                - **请注意**：不要重复选择相同的模型
                 - **请注意**：当你选择完质量第1高、质量第2高的模型后，若你认为剩余模型生成质量均不理想，可在后续选项中选择**NULL**项
                 - **请注意**：在问卷提交后，会出现导出问卷评估数据的按钮，请点击进行下载。
                 - **请注意**：每一页问卷会询问当前用户的个性标签和情绪标签，支持多选。
@@ -473,9 +464,11 @@ class UI:
                         st.info("我们会将您的评估结果用于进一步分析，感谢您提供的宝贵反馈！")
                         self.database.post_process(group_id=int(st.session_state['select_id']))
         else:
-            if st.button('开始'):
-                st.session_state['start'] = True
-                st.rerun()
+            columns = st.columns([5, 2, 5])
+            with columns[1]:
+                if st.button('开始'):
+                    st.session_state['start'] = True
+                    st.rerun()
 
 
     def show(self, ):
