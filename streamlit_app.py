@@ -425,8 +425,15 @@ class UI:
              
     def show_tag(self):
         anonymous_name = st.session_state['anonymous_list'][st.session_state['page_index']]
+        # for tag
         if anonymous_name not in st.session_state['tag']:
             st.session_state['tag'][anonymous_name] = {
+                'personalization_tags': [],
+                'emotion_tags': []
+            }
+        # for _tag
+        if anonymous_name not in st.session_state['_tag']:
+            st.session_state['_tag'][anonymous_name] = {
                 'personalization_tags': [],
                 'emotion_tags': []
             }
@@ -436,15 +443,18 @@ class UI:
         # 个性化标签输入
         st.markdown("**个性化标签**")
         personalization_options = ["探索", "艺术", "自然", "校园", "摄影", "科技", "设计", "温馨", "卡通", "书籍", "自拍", "好物分享", "其他"]
-        selected_personalization_tags = st.multiselect("请选择用户的个性化标签（可多选）", personalization_options, default=st.session_state['tag'][anonymous_name]['personalization_tags'])
+        default_personalization_options = st.session_state['tag'][anonymous_name]['personalization_tags']
+        selected_personalization_tags = st.multiselect("请选择用户的个性化标签（可多选）", personalization_options, key=f"personalization_{st.session_state['page_index']}", default=default_personalization_options)
 
         # 情绪标签选择
         st.markdown("**情绪标签**")
         emotion_options = ["期待", "好奇", "惊叹", "放松", "愉悦", "emo", "分享欲", "中性"]
-        selected_emotion_tags = st.multiselect("请选择用户的情绪标签（可多选）", emotion_options, default=st.session_state['tag'][anonymous_name]['emotion_tags'])
+        default_emotion_tags = st.session_state['tag'][anonymous_name]['emotion_tags']
+        selected_emotion_tags = st.multiselect("请选择用户的情绪标签（可多选）", emotion_options, key=f"emotion_{st.session_state['page_index']}", default=default_emotion_tags)
 
-        st.session_state['tag'][anonymous_name]['personalization_tags'] = selected_personalization_tags
-        st.session_state['tag'][anonymous_name]['emotion_tags'] = selected_emotion_tags
+        # 更新tag放到下一页中
+        st.session_state['_tag'][anonymous_name]['personalization_tags'] = selected_personalization_tags
+        st.session_state['_tag'][anonymous_name]['emotion_tags'] = selected_emotion_tags
 
         st.session_state['rank'][anonymous_name]['tag'] = {
             'personalized_tags': selected_personalization_tags,
@@ -466,16 +476,19 @@ class UI:
                 # 只在不是第一页时显示“上一页”按钮
                 if st.session_state['page_index'] > 0:
                     if st.button('上一页'):
+                        st.session_state['tag'] = st.session_state['_tag']
                         self.back_data()
 
             with cols[2]:  # 第三列
                 # 在不是最后一页时显示“下一页”按钮
                 if st.session_state['page_index'] < len(st.session_state['anonymous_list']) - 1:
                     if st.button('下一页'):
+                        st.session_state['tag'] = st.session_state['_tag']
                         self.forward_data()
                 # 在最后一页时显示“提交问卷”按钮
                 elif st.session_state['page_index'] == len(st.session_state['anonymous_list']) - 1:
                     if st.button('提交问卷'):
+                        st.session_state['tag'] = st.session_state['_tag']
                         st.success('感谢您的参与！您的反馈对于我们非常重要！🎉')
                         # ranking结果保存
                         json_str = json.dumps(st.session_state['rank'], ensure_ascii=False, indent=4)
@@ -540,6 +553,8 @@ class UI:
             st.session_state['start'] = False
         if 'tag' not in st.session_state:
             st.session_state['tag'] = {}
+        if '_tag' not in st.session_state:
+            st.session_state['_tag'] = {}
 
         # 所有模型的生成数据
         self.gen_data = self.database.gen_res
