@@ -436,12 +436,12 @@ class UI:
         # 个性化标签输入
         st.markdown("**个性化标签**")
         personalization_options = ["探索", "艺术", "自然", "校园", "摄影", "科技", "设计", "温馨", "卡通", "书籍", "自拍", "好物分享", "其他"]
-        selected_personalization_tags = st.multiselect("请选择用户的个性化标签（可多选）", personalization_options)
+        selected_personalization_tags = st.multiselect("请选择用户的个性化标签（可多选）", personalization_options, default=st.session_state['tag'][anonymous_name]['personalization_tags'])
 
         # 情绪标签选择
         st.markdown("**情绪标签**")
         emotion_options = ["期待", "好奇", "惊叹", "放松", "愉悦", "emo", "分享欲", "中性"]
-        selected_emotion_tags = st.multiselect("请选择用户的情绪标签（可多选）", emotion_options)
+        selected_emotion_tags = st.multiselect("请选择用户的情绪标签（可多选）", emotion_options, default=st.session_state['tag'][anonymous_name]['emotion_tags'])
 
         st.session_state['tag'][anonymous_name]['personalization_tags'] = selected_personalization_tags
         st.session_state['tag'][anonymous_name]['emotion_tags'] = selected_emotion_tags
