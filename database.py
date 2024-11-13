@@ -202,7 +202,12 @@ class DataBase:
         add_list = cfg['OPTION']['add_list']
         assert mode in ['all', 'ablation'], f'mode:{mode}不在规定范围内'
         gen_keys = list(cfg['GEN_PATH'].keys())
-        anonymous_list = list(load_json(cfg['FILE_PATH']['raw_test_file']).keys())
+        raw_anonymous_list = list(load_json(cfg['FILE_PATH']['raw_test_file']).keys())
+        sample_anonymous_list = []
+        for group_name, group_value in self.data.items():
+            for name in group_value:
+                if name != 'count':
+                    sample_anonymous_list.append(name)
 
         # 解析模型参数
         def parse_model_args(model_args):
@@ -214,10 +219,18 @@ class DataBase:
             return model_name, model_arch, idx
         
         # 解析模型生成结果
-        def parse_gen_file(gen_path: str, anonymous_list: list):
+        def parse_gen_file(gen_path: str, raw_anonymous_list: list, sample_anonymous_list: list):
             anonymous_res = {}
             with open(gen_path, 'r', encoding='utf-8') as f:
-                for anonymous_name, res in zip(anonymous_list, f):
+                lines = f.readlines()
+                line_num = len(lines)
+                if line_num == len(raw_anonymous_list):
+                    anonymous_list = raw_anonymous_list
+                elif line_num == len(sample_anonymous_list):
+                    anonymous_list = sample_anonymous_list
+                else:
+                    raise ValueError(f'生成文件行数不匹配，请检查')
+                for anonymous_name, res in zip(anonymous_list, lines):
                     anonymous_res[anonymous_name] = res
             return anonymous_res
 
@@ -228,7 +241,7 @@ class DataBase:
             if os.path.isfile(gen_path):
                 # 若满足以下条件，将该模型加入result
                 if (mode == 'all' and idx == '1') or (mode == 'ablation' and (gen_key in add_list or model_name == ablation_model_name)):
-                    result[gen_key] = parse_gen_file(gen_path=gen_path, anonymous_list=anonymous_list)
+                    result[gen_key] = parse_gen_file(gen_path=gen_path, raw_anonymous_list=raw_anonymous_list, sample_anonymous_list=sample_anonymous_list)
             # 若赋值（不赋值则代表该模型结果尚未传入）
             elif gen_path != '':
                 raise ValueError(f'{gen_key}参数值非合法路径')

@@ -21,11 +21,10 @@ def get_cfg():
         'maria_ft_gen_path#1':'./data/generation/maria.txt',
         'livebot_ft_gen_path#1':'./data/generation/livebot.txt',
         'mplug-video_z-shot_gen_path#1':'./data/generation/mplug-video.txt',
-        'mplug-owl3_z-shot_gen_path#1':'',
-        'qwen2-vl_z-shot_gen_path#1':'',
-        'minicpm-v_z-shot_gen_path#1':'',
-        'internvl_z-shot_gen_path#1':'',
-        'gpt-4o_z-shot_gen_path#1': '',
+        'mplug-owl3_z-shot_gen_path#1':'./data/generation/mplug-owl3.txt',
+        'qwen2-vl_z-shot_gen_path#1':'./data/generation/qwen2-vl.txt',
+        'minicpm-v_z-shot_gen_path#1':'./data/generation/minicpm-v.txt',
+        'gpt-4o_z-shot_gen_path#1': './data/generation/gpt-4o.txt',
     }
 
     # Option
@@ -37,7 +36,7 @@ def get_cfg():
 
     # UI
     cfg['UI'] = {
-        'max_rank': 2, # 选择前max_rank最高质量的模型
+        'max_rank': 4, # 选择前max_rank最高质量的模型
         'icon_path': './data/icon/rainbow.png'
     }
 
