@@ -233,7 +233,20 @@ class UI:
         """, unsafe_allow_html=True)
         st.markdown("")
 
-                
+        # 参考标准左栏显示
+        # 使用 st.sidebar 设置注意事项内容
+        with st.sidebar:
+            st.markdown("### 注意事项")
+            st.write("1. 请确保填写所有必填项。")
+            st.write("2. 若遇到问题，请联系作者。")
+            st.write("3. 请用 **浏览器** 打开该网页以便于文件下载。")
+            st.markdown("### 选择标准")
+            st.write("1. 与历史标题的重复程度")
+            st.write("2. 是否符合用户表达习惯")
+            st.write("3. 是否符合用户情绪状态")
+            st.write("4. 与真实标题的风格贴合")
+            st.write("5. 若发现某个模型生成结果与真实标签完全一样，请不要选择该模型")
+
         # 问卷介绍
         with st.expander("问卷介绍"):
             st.markdown("### 📄问卷介绍")
@@ -252,6 +265,7 @@ class UI:
 
                 **注意事项：**
                 - **请注意**：请用 **浏览器** 打开该网页（后续涉及下载文件）
+                - **请注意**：打开左侧滑动栏能够方便查看
                 - **请注意**：请对应上述角度进行认真分析
                 - **请注意**：不要重复选择相同的模型
                 - **请注意**：当你选择完质量第 1 高、质量第 2 高的模型后，若你认为剩余模型生成质量均不理想，可在后续选项中选择 **NULL** 项
@@ -284,6 +298,7 @@ class UI:
         anonymous_data = st.session_state['show_data'][anonymous_name]
         # 从anonymous_data中获取history note
         history_list = anonymous_data['history']
+        history_titles = []
         
         # 历史笔记
         st.markdown("""
@@ -294,6 +309,7 @@ class UI:
         
         for i, history_note in enumerate(history_list):
             title = history_note['title']
+            history_titles.append(title)
             image_prefix = history_note['sample_prefix']
             combined_img_path = os.path.join(self.cfg['FILE_PATH']['sample_img_dir'], image_prefix)
 
@@ -307,6 +323,11 @@ class UI:
             
             # 显示组合图像
             st.image(combined_img_path)
+        with st.sidebar:
+            st.markdown("### 历史笔记窗口")
+            for i in range(len(history_titles)):
+                title = history_titles[i]
+                st.write(f"第{i+1}条历史笔记标题：{title}")
         
     def show_target(self):
         anonymous_name = st.session_state['anonymous_list'][st.session_state['page_index']]
