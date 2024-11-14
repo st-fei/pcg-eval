@@ -407,6 +407,10 @@ class UI:
         # 创建ranking
         max_ranks = self.cfg['UI']['max_rank']
         if anonymous_name not in st.session_state['rank']:
+            st.session_state['_rank'][anonymous_name] = {
+                f'rank_{i+1}':{'model_name': 'NULL', 'gen_res': 'NULL'} for i in range(max_ranks)
+        }    
+        if anonymous_name not in st.session_state['rank']:
             st.session_state['rank'][anonymous_name] = {
                 f'rank_{i+1}':{'model_name': 'NULL', 'gen_res': 'NULL'} for i in range(max_ranks)
         }    
@@ -416,12 +420,14 @@ class UI:
         columns = st.columns(max_ranks)
         for i in range(max_ranks):
             with columns[i]:
-                selected_model = st.selectbox(f"选择质量第 {i+1} 高的模型:", options, key=f"rank_{i+1}")
+                default_value = model_reverse_map[st.session_state['rank'][anonymous_name][f'rank_{i+1}']['model_name']] if st.session_state['rank'][anonymous_name][f'rank_{i+1}']['model_name'] != 'NULL' else 'NULL'
+                default_index = options.index(default_value)
+                selected_model = st.selectbox(f"选择质量第 {i+1} 高的模型:", options, key=f"rank_{i+1}_{st.session_state['page_index']}", index=default_index)
                 if selected_model != 'NULL':
                     selected_model_name = model_map[selected_model]
                     # 匹配模型rank
-                    st.session_state['rank'][anonymous_name][f'rank_{i+1}']['model_name'] = selected_model_name
-                    st.session_state['rank'][anonymous_name][f'rank_{i+1}']['gen_res'] = self.gen_data[selected_model_name][anonymous_name]
+                    st.session_state['_rank'][anonymous_name][f'rank_{i+1}']['model_name'] = selected_model_name
+                    st.session_state['_rank'][anonymous_name][f'rank_{i+1}']['gen_res'] = self.gen_data[selected_model_name][anonymous_name]
              
     def show_tag(self):
         anonymous_name = st.session_state['anonymous_list'][st.session_state['page_index']]
@@ -456,7 +462,7 @@ class UI:
         st.session_state['_tag'][anonymous_name]['personalization_tags'] = selected_personalization_tags
         st.session_state['_tag'][anonymous_name]['emotion_tags'] = selected_emotion_tags
 
-        st.session_state['rank'][anonymous_name]['tag'] = {
+        st.session_state['_rank'][anonymous_name]['tag'] = {
             'personalized_tags': selected_personalization_tags,
             'emotion_tags': selected_emotion_tags
         }
@@ -477,6 +483,7 @@ class UI:
                 if st.session_state['page_index'] > 0:
                     if st.button('上一页'):
                         st.session_state['tag'] = st.session_state['_tag']
+                        st.session_state['rank'] = st.session_state['_rank'].copy()
                         self.back_data()
 
             with cols[2]:  # 第三列
@@ -484,11 +491,13 @@ class UI:
                 if st.session_state['page_index'] < len(st.session_state['anonymous_list']) - 1:
                     if st.button('下一页'):
                         st.session_state['tag'] = st.session_state['_tag'].copy()
+                        st.session_state['rank'] = st.session_state['_rank'].copy()
                         self.forward_data()
                 # 在最后一页时显示“提交问卷”按钮
                 elif st.session_state['page_index'] == len(st.session_state['anonymous_list']) - 1:
                     if st.button('提交问卷'):
                         st.session_state['tag'] = st.session_state['_tag'].copy()
+                        st.session_state['rank'] = st.session_state['_rank'].copy()
                         st.session_state['submitted'] = True
                         self.database.post_process(group_id=int(st.session_state['select_id']))
 
@@ -555,6 +564,8 @@ class UI:
             select_id = st.session_state['select_id']
         if 'rank' not in st.session_state:
             st.session_state['rank'] = {}
+        if '_rank' not in st.session_state:
+            st.session_state['_rank'] = {}
         if 'start' not in st.session_state:
             st.session_state['start'] = False
         if 'tag' not in st.session_state:
