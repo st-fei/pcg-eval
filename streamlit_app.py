@@ -448,7 +448,7 @@ class UI:
 
         # 个性化标签输入
         st.markdown("**个性化标签**")
-        personalization_options = ["探索", "艺术", "自然", "校园", "摄影", "科技", "萌宠",  "设计", "温馨", "美食", "卡通", "书籍", "自拍", "好物分享", "其他"]
+        personalization_options = ["探索", "艺术", "自然", "校园", "摄影", "科技", "萌宠", "运动", "设计", "温馨", "美食", "卡通", "书籍", "自拍", "好物分享", "其他"]
         default_personalization_options = st.session_state['tag'][anonymous_name]['personalization_tags']
         selected_personalization_tags = st.multiselect("请选择用户的个性化标签（可多选）", personalization_options, key=f"personalization_{st.session_state['page_index']}", default=default_personalization_options)
 
