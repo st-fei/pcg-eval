@@ -483,29 +483,35 @@ class UI:
                 # 在不是最后一页时显示“下一页”按钮
                 if st.session_state['page_index'] < len(st.session_state['anonymous_list']) - 1:
                     if st.button('下一页'):
-                        st.session_state['tag'] = st.session_state['_tag']
+                        st.session_state['tag'] = st.session_state['_tag'].copy()
                         self.forward_data()
                 # 在最后一页时显示“提交问卷”按钮
                 elif st.session_state['page_index'] == len(st.session_state['anonymous_list']) - 1:
                     if st.button('提交问卷'):
-                        st.session_state['tag'] = st.session_state['_tag']
-                        st.success('感谢您的参与！您的反馈对于我们非常重要！🎉')
-                        # ranking结果保存
-                        json_str = json.dumps(st.session_state['rank'], ensure_ascii=False, indent=4)
-                        now = datetime.now()
-                        formatted_date = now.strftime("%Y-%m-%d-%H%M%S")
-                        # 下载按钮
-                        st.markdown("### 📥下载您的评估结果")
-                        st.write("点击下方按钮以下载您的评估结果文件。")
-                        st.download_button(
-                            label='📥下载JSON 结果',
-                            data=json_str,
-                            file_name=f'{formatted_date}.json',
-                            mime='application/json'
-                        )
-                        # 数据处理提示
-                        st.info("我们会将您的评估结果用于进一步分析，感谢您提供的宝贵反馈！")
+                        st.session_state['tag'] = st.session_state['_tag'].copy()
+                        st.session_state['submitted'] = True
                         self.database.post_process(group_id=int(st.session_state['select_id']))
+
+            if st.session_state.get('submitted', False):
+                st.success('感谢您的参与！您的反馈对于我们非常重要！🎉')
+                # ranking结果保存
+                json_str = json.dumps(st.session_state['rank'], ensure_ascii=False, indent=4)
+                now = datetime.now()
+                formatted_date = now.strftime("%Y-%m-%d-%H%M%S")
+                # 下载按钮
+                st.markdown("### 📥下载您的评估结果")
+                st.write("点击下方按钮以下载您的评估结果文件。")
+                st.download_button(
+                    label='📥下载JSON 结果',
+                    data=json_str,
+                    file_name=f'{formatted_date}.json',
+                    mime='application/json'
+                )
+                # 数据处理提示
+                st.info("我们会将您的评估结果用于进一步分析，感谢您提供的宝贵反馈！")
+
+
+                        
         else:
             columns = st.columns([5, 2, 5])
             with columns[1]:
