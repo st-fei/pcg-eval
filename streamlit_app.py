@@ -558,7 +558,8 @@ class UI:
         if 'page_index' not in st.session_state:
             st.session_state['page_index'] = 0
         if 'select_id' not in st.session_state:
-            select_id = self.database.select()
+            # select_id = self.database.select()
+            select_id = 3
             st.session_state['select_id'] = select_id
         else:
             select_id = st.session_state['select_id']
